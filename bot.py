@@ -13,7 +13,7 @@ from gui.repairing_column.repairing_column import add_repairing_column
 from gui.start_fishing_button.start_fishing_button import add_start_fishing_button
 from utils.config import get_config, save_data
 from utils.global_variables import ICON_PATH
-from wrappers.logging_wrapper import log_level
+from wrappers.logging_wrapper import log_level, info
 
 
 class FishingBoi(tk.Tk):
@@ -39,7 +39,7 @@ class FishingBoi(tk.Tk):
         add_bait_column(self, self.config)
         add_start_fishing_button(self)
 
-        # self.asyncio_event_loop.set_debug(True)
+        self.asyncio_event_loop.set_debug(True)
         threading.Thread(daemon=True, target=self.asyncio_event_loop.run_forever).start()
 
     def popup_rectangle_window(self, button, x, y, width, height):
@@ -111,7 +111,7 @@ class FishingBoi(tk.Tk):
         self.fishing_coro = self.asyncio_event_loop.call_soon_threadsafe(self.do_create_task)
 
     def do_create_task(self):
-        self.asyncio_event_loop.create_task(fishing_loop(self.config), name="fishing_loop")
+        self.asyncio_event_loop.create_task(fishing_loop(self), name="fishing_loop")
 
 
 if __name__ == "__main__":
