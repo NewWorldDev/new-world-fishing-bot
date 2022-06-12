@@ -34,8 +34,9 @@ async def pause(ctx):
 
 
 async def cast(ctx):
-    cast_timeout = await random_timeout(ctx["config"]["fishing"]["timeouts"]["cast"])
-    debug("Pause for: 6 s (skipping animation)")
+    # cast_timeout = await random_timeout(ctx["config"]["fishing"]["timeouts"]["cast"])
+    cast_timeout = 0.72
+    debug("Pause for: 10 s (skipping animation)")
     await sleep(10)
     debug("release b")
     await release_key(ctx, "b")
@@ -115,11 +116,11 @@ async def confirm_repair(ctx, timeout):
 
 async def move_left_right(ctx, timeout):
     await press_key(ctx, "a")
-    await sleep(timeout)
+    await sleep(0.3)
     await release_key(ctx, "a")
     await sleep(1.0)
     await press_key(ctx, "d")
-    await sleep(timeout)
+    await sleep(0.3)
     await release_key(ctx, "d")
 
 
