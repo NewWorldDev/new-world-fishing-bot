@@ -38,8 +38,8 @@ async def cast(ctx):
     cast_timeout = 0.72
     debug("Pause for: 10 s (skipping animation)")
     await sleep(10)
-    debug("release b")
-    await release_key(ctx, "b")
+    debug("release `")
+    await release_key(ctx, "`")
     debug("Pause for: 1 s")
     await sleep(1)
     debug(f"Cast for: {cast_timeout} s")
@@ -48,12 +48,12 @@ async def cast(ctx):
     await release_mouse_key(ctx)
     debug("Pause for: 4 s")
     await sleep(4)
-    debug("press b")
-    await press_key(ctx, "b")
+    debug("press `")
+    await press_key(ctx, "`")
 
 
 async def repairing(ctx):
-    await release_key(ctx, "b")
+    await release_key(ctx, "`")
     arm_disarm_timeout = await random_timeout(ctx["config"]["repairing"]["timeouts"]["arm_disarm"])
     debug(f"Disarm fishing rod. Total time: {arm_disarm_timeout} s")
     await arm_disarm_fishing_rod(ctx, arm_disarm_timeout)
@@ -125,7 +125,7 @@ async def move_left_right(ctx, timeout):
 
 
 async def select_bait(ctx):
-    await release_key(ctx, "b")
+    await release_key(ctx, "`")
 
     debug("Bait selection.")
     await press_key(ctx, "r")

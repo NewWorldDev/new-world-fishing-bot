@@ -22,20 +22,19 @@ async def fishing_loop(context):
         debug("starting new loop")
         last_results.add(await call_appropriate_fishing_action(ctx, last_results))
         if ctx["consecutive_rods_casted"] > 8:
+            info("Consecutive rods casted more than 8: " + str(ctx["consecutive_rods_casted"]))
             context.destroy()
             break
-        info("Consecutive rods casted " + str(ctx["consecutive_rods_casted"]))
-        if last_results.is_full_of("0"):
-            if ctx["config"]["repairing"]["enable"].get() == 1:
-                should_repair_in = -1 * (int(time()) - last_repair_time - ctx["config"]["repairing"]["every"].get())
-                debug("Repair in: " + str(should_repair_in))
-                if should_repair_in < 0:
-                    last_repair_time = int(time())
-                    info("Repairing")
-                    await repairing(ctx)
-                    if ctx["config"]["bait"]["enable"].get() == 1:
-                        info("Selecting bait")
-                        await select_bait(ctx)
+        if ctx["config"]["repairing"]["enable"].get() == 1:
+            should_repair_in = -1 * (int(time()) - last_repair_time - ctx["config"]["repairing"]["every"].get())
+            debug("Repair in: " + str(should_repair_in))
+            if should_repair_in < 0:
+                last_repair_time = int(time())
+                info("Repairing")
+                await repairing(ctx)
+                if ctx["config"]["bait"]["enable"].get() == 1:
+                    info("Selecting bait")
+                    await select_bait(ctx)
 
 
 async def call_appropriate_fishing_action(ctx, last_results):

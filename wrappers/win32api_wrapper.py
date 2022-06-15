@@ -19,6 +19,7 @@ async def click_mouse_with_coordinates(ctx, x, y):
 
 
 VK_CODE = {
+    "`": 0xC0,
     "tab": 0x09,
     "a": 0x41,
     "b": 0x42,
