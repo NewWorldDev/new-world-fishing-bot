@@ -1,14 +1,17 @@
-from time import time
+from time import sleep, time
 from utils.LastResults import LastResults
 from wrappers.logging_wrapper import debug, info
-
+from wrappers.win32api_wrapper import (
+    press_mouse_key,
+    release_key,
+    release_mouse_key,
+)
 import asyncio
-from functionality.fishing_actions import cast, fish_notice, pause, reel_fish, repairing, select_bait
+from functionality.fishing_actions import cast, fish_notice, pause, recenter, reel_fish, repairing, select_bait, skipAnimation
 from functionality.image_recognition import image_recognition_result
 
 
 async def fishing_loop(context):
-
     last_results = LastResults()
     last_repair_time = int(time())
     loop = asyncio.get_event_loop()
@@ -19,7 +22,6 @@ async def fishing_loop(context):
     }
 
     while True:
-        debug("starting new loop")
         last_results.add(await call_appropriate_fishing_action(ctx, last_results))
         if ctx["consecutive_rods_casted"] > 8:
             info("Consecutive rods casted more than 8: " + str(ctx["consecutive_rods_casted"]))
@@ -27,7 +29,6 @@ async def fishing_loop(context):
             break
         if ctx["config"]["repairing"]["enable"].get() == 1:
             should_repair_in = -1 * (int(time()) - last_repair_time - ctx["config"]["repairing"]["every"].get())
-            debug("Repair in: " + str(should_repair_in))
             if should_repair_in < 0:
                 last_repair_time = int(time())
                 info("Repairing")
@@ -51,7 +52,7 @@ async def call_appropriate_fishing_action(ctx, last_results):
         last_results.get_last_value() != result_from_model and result_from_model != "1"
     ):  # double checking that it is a correct match
         ctx["consecutive_rods_casted"] = 0
-        info("Resetting rod casts " + str(ctx["consecutive_rods_casted"]))
+        #info("Resetting rod casts " + str(ctx["consecutive_rods_casted"]))
         return result_from_model
     if (
         last_results.get_last_value() == result_from_model and result_from_model == "5"
@@ -67,22 +68,34 @@ async def call_appropriate_fishing_action(ctx, last_results):
         await fish_notice(ctx)
         return "1"
     elif result_from_model == "2":  # 2 - model matched the green icon (reeling a fish in)
-        info("Green color spotted, Reeling a fish")
-        await reel_fish(ctx)
-        return "2"
+        if last_results.get_one_before_last_value() != "2":
+            info("Green color spotted, Reeling a fish")
+            await reel_fish(ctx)
+            return "2"
     elif result_from_model == "3":  # 3 - model matched the orange icon (wait x sec)
         if last_results.are_too_much_pauses():
             info("Too much pauses, Reeling a fish!")
             await reel_fish(ctx)
             return "3"
         info("Orange color spotted, Pause fishing")
+        await release_mouse_key(ctx)
         await pause(ctx)
         return "3"
     elif result_from_model == "4":  # 4 - model matched the red icon (wait x sec)
         info("Red color spotted, Pause fishing")
+        await release_mouse_key(ctx)
         await pause(ctx)
         return "4"
     elif result_from_model == "5":  # 5 - model did not match anything (left click, wait x sec)
-        info("Cast fishing rod")
-        await cast(ctx)
-        return "5"
+        # if last result was green click to remove the animation
+
+        if last_results.get_one_before_last_value() == "2":
+            await release_mouse_key(ctx)
+            await pause(ctx)
+            await press_mouse_key(ctx)
+            
+        if last_results.get_one_before_last_value() != "0":
+            info("Cast fishing rod")
+            await release_mouse_key(ctx)
+            await cast(ctx)
+            return "5"

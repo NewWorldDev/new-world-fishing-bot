@@ -1,8 +1,8 @@
 fishing:
-  x: 753
-  y: 159
-  width: 301
-  height: 794
+  x: 828
+  y: 254
+  width: 151
+  height: 476
   timeouts:
     loop:
       min: 0.01
@@ -17,13 +17,13 @@ fishing:
       min: 0.5
       max: 1.5
     cast:
-      min: 0.5
-      max: 1.0
+      min: 1.2
+      max: 1.8
 repairing:
   x: 855
   y: 508
   length: 25
-  every: 300
+  every: 500
   enable: 1
   timeouts:
     arm_disarm:
@@ -42,8 +42,8 @@ repairing:
       min: 0.5
       max: 1.0
 bait:
-  bait_x: 1175
-  bait_y: 450
+  bait_x: 1280
+  bait_y: 572
   equip_button_x: 1550
   equip_button_y: 815
   length: 25

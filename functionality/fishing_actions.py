@@ -21,10 +21,7 @@ async def fish_notice(ctx):
 
 async def reel_fish(ctx):
     reel_timeout = await random_timeout(ctx["config"]["fishing"]["timeouts"]["reeling"])
-    debug(f"Press mouse key for: {reel_timeout} s")
     await press_mouse_key(ctx)
-    await sleep(reel_timeout)
-    await release_mouse_key(ctx)
 
 
 async def pause(ctx):
@@ -34,23 +31,37 @@ async def pause(ctx):
 
 
 async def cast(ctx):
-    # cast_timeout = await random_timeout(ctx["config"]["fishing"]["timeouts"]["cast"])
-    cast_timeout = 0.72
-    debug("Pause for: 10 s (skipping animation)")
-    await sleep(10)
-    debug("release `")
-    await release_key(ctx, "`")
+    cast_timeout = await random_timeout(ctx["config"]["fishing"]["timeouts"]["cast"])
+    # cast_timeout = 0.01
     debug("Pause for: 1 s")
     await sleep(1)
-    debug(f"Cast for: {cast_timeout} s")
+    debug("click mouse")
     await press_mouse_key(ctx)
     await sleep(cast_timeout)
     await release_mouse_key(ctx)
-    debug("Pause for: 4 s")
-    await sleep(4)
+    await sleep(1)
+    debug("release `")
+    await release_key(ctx, "`")
+    
+    debug("Pause for: 0.1 s")
+    await sleep(0.1)
     debug("press `")
     await press_key(ctx, "`")
+    debug("Pause for: 3 s")
+    await sleep(3)
 
+async def skipAnimation(ctx):
+    debug("Pause for: 1 s")
+    await sleep(1)
+    debug("click mouse")
+    await press_mouse_key(ctx)
+    await sleep(0.1)
+    await release_mouse_key(ctx)
+
+async def recenter(ctx):
+    await sleep(1)
+    debug("release `")
+    await release_key(ctx, "`")
 
 async def repairing(ctx):
     await release_key(ctx, "`")
