@@ -33,8 +33,6 @@ async def pause(ctx):
 async def cast(ctx):
     cast_timeout = await random_timeout(ctx["config"]["fishing"]["timeouts"]["cast"])
     # cast_timeout = 0.01
-    debug("Pause for: 1 s")
-    await sleep(1)
     debug("click mouse")
     await press_mouse_key(ctx)
     await sleep(cast_timeout)

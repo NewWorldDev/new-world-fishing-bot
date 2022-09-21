@@ -16,7 +16,10 @@ class LastResults:
         return self.data[-1]
 
     def get_one_before_last_value(self):
-        return self.data[-2]
+        if len(self.data) > 1:
+            return self.data[-2]
+        else:
+            return self.data[-1]
 
     def are_too_much_pauses(self):
         return self.data[-7:].count("3") + self.data[-7:].count("4") == len(self.data)

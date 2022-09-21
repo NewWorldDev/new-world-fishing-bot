@@ -2,6 +2,7 @@ from time import sleep, time
 from utils.LastResults import LastResults
 from wrappers.logging_wrapper import debug, info
 from wrappers.win32api_wrapper import (
+    press_key,
     press_mouse_key,
     release_key,
     release_mouse_key,
@@ -89,13 +90,29 @@ async def call_appropriate_fishing_action(ctx, last_results):
     elif result_from_model == "5":  # 5 - model did not match anything (left click, wait x sec)
         # if last result was green click to remove the animation
 
-        if last_results.get_one_before_last_value() == "2":
+
+        debug("current value: " + result_from_model)
+        if last_results.get_last_value():
+            debug("last value: " + last_results.get_last_value())
+        if last_results.get_one_before_last_value():
+            debug("one before: " + last_results.get_one_before_last_value())
+
+        if last_results.get_one_before_last_value() is None or last_results.get_one_before_last_value() == "2" or last_results.get_one_before_last_value() == "3":
+            debug("Caught fish clicking mouse to skip animation")
             await release_mouse_key(ctx)
             await pause(ctx)
+            await pause(ctx)
             await press_mouse_key(ctx)
+            await release_mouse_key(ctx)
+            
+            await pause(ctx)
+            debug("release `")
+            await release_key(ctx, "`")
+            
+            debug("release `")
+            await press_key(ctx, "`")
             
         if last_results.get_one_before_last_value() != "0":
             info("Cast fishing rod")
-            await release_mouse_key(ctx)
             await cast(ctx)
             return "5"
